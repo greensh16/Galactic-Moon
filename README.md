@@ -2,6 +2,10 @@
 
 Code to track and display the movement of the Moon (and other Celestial bodies) on a Galactic Unicorn led matrix.
 
+<img src="https://github.com/greensh16/Galactic-Moon/assets/20108650/97e9f2e9-ab1d-4d9c-9ad3-bd605cca9bcd" alt="Image" width="900">
+
+The moon is represented by 4 white dots. The user pointing north is represented by a green dot
+
 ## How to use
 
 - Copy all the python files to your Galactic Unicon using Thonny (or whatever you use).
