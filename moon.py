@@ -9,7 +9,6 @@
 
 
 import math
-from datetime import datetime
 
 class MoonPosition:
     def __init__(self):
