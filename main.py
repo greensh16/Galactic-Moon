@@ -82,7 +82,7 @@ def draw_moon(altitude, azimuth):
     # Check if the position is valid (i.e., not None)
     if x is not None and y is not None:
         # Set the pen color to white
-        moon_pen = graphics.create_pen(0, 255, 0)
+        moon_pen = graphics.create_pen(255, 255, 255)
         graphics.set_pen(moon_pen)
         
         # Draw the moon as 4 adjacent pixels
@@ -102,7 +102,7 @@ while True:
     graphics.clear()
     # Add a pixel for the observer at North
     graphics.set_pen(graphics.create_pen(0, 255, 0))
-    graphics.pixel(10, 26)
+    graphics.pixel(26, 10)
     galactic.update(graphics)
 
     # get the current time
