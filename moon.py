@@ -4,7 +4,7 @@
 # This code calculates the position of the moon in the sky at any given time, latitude, and longitude.
 # The position of the observer is assumed to be in the Southern Hemisphere, if you are 
 # in the Northern Hemisphere then you my need to tweek the end of moon_position().
-# The various equations in this code are based on https://github.com/mourner/suncalc and 
+# The various equations in this code are based on Vladimir Agafonkin's https://github.com/mourner/suncalc and 
 # various astronomical sites.
 
 
