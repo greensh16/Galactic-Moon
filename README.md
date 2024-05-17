@@ -9,7 +9,7 @@ The moon is represented by 4 white dots. The user pointing north is represented 
 ## How to use
 
 - Copy all the python files to your Galactic Unicon using Thonny (or whatever you use).
-- Add a secrets.py scritp to contain your Wifi SSID and password, also add your latitude and longitude.
+- Add a secrets.py script to contain your Wifi SSID and password, also add your latitude and longitude.
 - This code was created to track the moon in the Southern Hemsiphere, you my need to change; 1 - The azimuth extents near the top of main.py. 2 - The corrections for the azimuth near the end of moon_position() in moon.py
 
 ## TODO
