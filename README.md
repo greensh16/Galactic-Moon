@@ -4,7 +4,7 @@ Code to track and display the movement of the Moon (and other Celestial bodies) 
 
 <img src="https://github.com/greensh16/Galactic-Moon/assets/20108650/97e9f2e9-ab1d-4d9c-9ad3-bd605cca9bcd" alt="Image" width="900">
 
-The moon is represented by 4 white dots. The user pointing north is represented by a green dot
+The moon is represented by 4 white dots that vary in brightness based on the moon's phase. The user pointing north is represented by a green dot.
 
 ## How to use
 
@@ -15,7 +15,7 @@ The moon is represented by 4 white dots. The user pointing north is represented 
 ## TODO
 
 - Track the Sun
-- Track the Moon's brightness and maybe phase
+- ~~Track the Moon's brightness and maybe phase~~ ✓ **COMPLETED** - Moon brightness now tracked and displayed
 - Track some planets
 - Change the background colour of the display to match the time of day.
 
