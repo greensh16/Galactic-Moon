@@ -45,9 +45,61 @@ class MoonPosition:
         sid_t = math.radians((280.16 + 360.9856235 * d)) - lw
         return sid_t
 
+    def sun_position(self, d):
+        """
+        Calculates the sun's position for brightness calculations.
+
+        Parameters:
+        d (float): Number of days since January 1, 2000.
+
+        Returns:
+        tuple: (right_ascension, declination) in radians.
+        """
+        # Mean longitude of the sun
+        l_sun = math.radians(280.460 + 0.9856474 * d)
+        
+        # Mean anomaly of the sun
+        g_sun = math.radians(357.528 + 0.9856003 * d)
+        
+        # Ecliptic longitude of the sun with perturbation
+        lambda_sun = l_sun + math.radians(1.915 * math.sin(g_sun) + 0.020 * math.sin(2 * g_sun))
+        
+        # Right ascension of the sun
+        ra_sun = math.atan2(math.cos(self.obl_e) * math.sin(lambda_sun), math.cos(lambda_sun))
+        
+        # Declination of the sun
+        dec_sun = math.asin(math.sin(self.obl_e) * math.sin(lambda_sun))
+        
+        return ra_sun, dec_sun
+
+    def moon_brightness(self, moon_ra, moon_dec, sun_ra, sun_dec):
+        """
+        Calculates the moon's brightness (illuminated fraction).
+
+        Parameters:
+        moon_ra (float): Moon's right ascension in radians.
+        moon_dec (float): Moon's declination in radians.
+        sun_ra (float): Sun's right ascension in radians.
+        sun_dec (float): Sun's declination in radians.
+
+        Returns:
+        float: Illuminated fraction of the moon (0.0 to 1.0).
+        """
+        # Calculate the phase angle between Moon and Sun as seen from Earth
+        phase_angle = math.acos(
+            math.sin(sun_dec) * math.sin(moon_dec) + 
+            math.cos(sun_dec) * math.cos(moon_dec) * math.cos(sun_ra - moon_ra)
+        )
+        
+        # Calculate illuminated fraction using standard formula
+        # This gives the fraction of the moon that is illuminated (0 = new moon, 1 = full moon)
+        illuminated_fraction = (1 + math.cos(phase_angle)) / 2
+        
+        return illuminated_fraction
+
     def moon_position(self, date, lat, lng):
         """
-        Calculates the moon's position for a given date and location.
+        Calculates the moon's position and brightness for a given date and location.
 
         Parameters:
         date (float): Date in seconds since January 1, 1970.
@@ -55,7 +107,8 @@ class MoonPosition:
         lng (float): Longitude in degrees.
 
         Returns:
-        tuple: azimuth (float) in degrees, altitude (float) in degrees, and distance to the moon in km (float).
+        tuple: azimuth (float) in degrees, altitude (float) in degrees, 
+               distance to the moon in km (float), and brightness (float) 0.0-1.0.
         """
         lng_ra  = math.radians(-lng)
         lat_ra = math.radians(lat)
@@ -89,5 +142,11 @@ class MoonPosition:
         if az_deg > 360:
             az_deg -= 360
 
-        return az_deg, alt_deg, moon_dist_pert
+        # Calculate sun position for brightness calculation
+        sun_ra, sun_dec = self.sun_position(dt)
+        
+        # Calculate moon brightness
+        brightness = self.moon_brightness(ra, dec, sun_ra, sun_dec)
+
+        return az_deg, alt_deg, moon_dist_pert, brightness
 
