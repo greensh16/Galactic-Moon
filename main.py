@@ -75,14 +75,18 @@ def map_moon_position(altitude, azimuth):
     return x, y
 
 # Function to draw the moon on the display
-def draw_moon(altitude, azimuth):
+def draw_moon(altitude, azimuth, brightness):
     # Get the moon's position in display coordinates
     x, y = map_moon_position(altitude, azimuth)
     
     # Check if the position is valid (i.e., not None)
     if x is not None and y is not None:
-        # Set the pen color to white
-        moon_pen = graphics.create_pen(255, 255, 255)
+        # Calculate brightness-based color intensity (brightness ranges from 0.0 to 1.0)
+        # Scale brightness to a useful range for visibility (minimum 20% to ensure moon is always visible)
+        intensity = int(max(20, brightness * 255))
+        
+        # Set the pen color based on brightness
+        moon_pen = graphics.create_pen(intensity, intensity, intensity)
         graphics.set_pen(moon_pen)
         
         # Draw the moon as 4 adjacent pixels
@@ -109,12 +113,12 @@ while True:
     current_time = utime.localtime()
     date = utime.mktime(current_time)
 
-    # Calculate the moon's position
-    azimuth, altitude, distance = MoonPosition().moon_position(date, secrets.latitude, secrets.longitude)
-    #print(f"Moon Altitude: {alt:.2f} degrees, Azimuth: {az:.2f} degrees")
+    # Calculate the moon's position and brightness
+    azimuth, altitude, distance, brightness = MoonPosition().moon_position(date, secrets.latitude, secrets.longitude)
+    #print(f"Moon Altitude: {altitude:.2f} degrees, Azimuth: {azimuth:.2f} degrees, Brightness: {brightness:.2f}")
 
     # Draw the moon
-    draw_moon(altitude, azimuth)
+    draw_moon(altitude, azimuth, brightness)
 
     # Wait for 10 minutes before updating again (600 seconds)
     utime.sleep(600)
