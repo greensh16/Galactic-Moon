@@ -17,7 +17,7 @@ The moon is represented by 4 white dots that vary in brightness based on the moo
 - Track the Sun
 - ~~Track the Moon's brightness and maybe phase~~ ✓ **COMPLETED** - Moon brightness now tracked and displayed
 - Track some planets
-- Change the background colour of the display to match the time of day.
+- ~~Change the background colour of the display to match the time of day~~ ✓ **COMPLETED** - Background now changes: blue (day), black (night), orange (evening/twilight)
 
 ## Dependencies
 - ```galactic```: Library for the Pimoroni Galactic Unicorn display.

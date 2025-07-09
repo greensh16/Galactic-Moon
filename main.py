@@ -12,7 +12,7 @@
 # latitude and longitude in there too.
 
 
-import machine, time, network, ntptime, utime
+import machine, time, network, ntptime, utime, math
 from galactic import GalacticUnicorn
 from picographics import PicoGraphics, DISPLAY_GALACTIC_UNICORN as DISPLAY
 from moon import MoonPosition
@@ -74,6 +74,53 @@ def map_moon_position(altitude, azimuth):
     
     return x, y
 
+# Function to get background color based on time of day
+def get_background_color(current_time, lat, lng):
+    """
+    Determines background color based on sun position (time of day).
+    
+    Parameters:
+    current_time: current time in seconds since epoch
+    lat: latitude in degrees
+    lng: longitude in degrees
+    
+    Returns:
+    tuple: (r, g, b) color values for background
+    """
+    # Calculate sun position using existing MoonPosition class
+    moon_calc = MoonPosition()
+    dt = moon_calc.to_days_J2000(current_time)
+    
+    # Get sun position - we need sun altitude to determine time of day
+    sun_ra, sun_dec = moon_calc.sun_position(dt)
+    
+    # Calculate sun altitude using similar logic to moon calculation
+    lng_ra = math.radians(-lng)
+    lat_ra = math.radians(lat)
+    
+    # Calculate the hour angle of the sun
+    H = moon_calc.sidereal_time(dt, lng_ra) - sun_ra
+    
+    # Normalize hour angle to [-π, π] range
+    while H > math.pi:
+        H -= 2 * math.pi
+    while H < -math.pi:
+        H += 2 * math.pi
+    
+    sun_alt_rad = math.asin(math.sin(lat_ra) * math.sin(sun_dec) + math.cos(lat_ra) * math.cos(sun_dec) * math.cos(H))
+    sun_alt_deg = math.degrees(sun_alt_rad)
+    
+    # Determine time of day based on sun altitude
+    if sun_alt_deg > 0:
+        # Day - sun is above horizon (blue background)
+        return (0, 0, 50)  # Dim blue
+    elif sun_alt_deg < -18:
+        # Night - astronomical twilight (black background)
+        return (0, 0, 0)   # Black
+    else:
+        # Evening/twilight - sun is below horizon but not fully dark (yellow/orange background)
+        return (50, 25, 0)  # Dim orange/yellow
+
 # Function to draw the moon on the display
 def draw_moon(altitude, azimuth, brightness):
     # Get the moon's position in display coordinates
@@ -100,18 +147,21 @@ def draw_moon(altitude, azimuth, brightness):
 
 # Loop to update the moon's position every 10 minutes
 while True:
+    # get the current time
+    current_time = utime.localtime()
+    date = utime.mktime(current_time)
 
-    # Clear the display
-    graphics.set_pen(graphics.create_pen(0, 0, 0))
+    # Get background color based on time of day
+    bg_r, bg_g, bg_b = get_background_color(date, secrets.latitude, secrets.longitude)
+    
+    # Clear the display with time-based background color
+    graphics.set_pen(graphics.create_pen(bg_r, bg_g, bg_b))
     graphics.clear()
+    
     # Add a pixel for the observer at North
     graphics.set_pen(graphics.create_pen(0, 255, 0))
     graphics.pixel(26, 10)
     galactic.update(graphics)
-
-    # get the current time
-    current_time = utime.localtime()
-    date = utime.mktime(current_time)
 
     # Calculate the moon's position and brightness
     azimuth, altitude, distance, brightness = MoonPosition().moon_position(date, secrets.latitude, secrets.longitude)
